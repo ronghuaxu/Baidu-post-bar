@@ -22,7 +22,7 @@ public class DatainputmachineTest {
     @Test
     public void getData() {
         try {
-            datainputmachine.getData(urlLoader.GetTowards("java"));
+            datainputmachine.getData(urlLoader.GetTowards("java", 0));
         } catch (ErrorkeywordException e) {
             e.printStackTrace();
         }

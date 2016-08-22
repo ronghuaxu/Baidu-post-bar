@@ -12,15 +12,17 @@ import java.text.MessageFormat;
 public class UrlLoader {
 
 
-    private final static String URL = "http://tieba.baidu.com/f?kw={0}&ie=utf-8&tab=good";
+    private final static String URL = "http://tieba.baidu.com/f?kw={0}&ie=utf-8&tab=good&cid=0&pn={1}";
 
-    public static String GetTowards(String keyword) throws ErrorkeywordException {
+    public static String GetTowards(String keyword, int page) throws ErrorkeywordException {
         if (keyword.isEmpty() || keyword.equals("")) {
             throw new ErrorkeywordException("keyword 不能为空");
         }
 
-        return MessageFormat.format(URL, keyword.trim());
+        return MessageFormat.format(URL, keyword.trim(), page * 50);
     }
+
+
 
 
 }

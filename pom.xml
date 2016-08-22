@@ -45,5 +45,72 @@
             <artifactId>requests</artifactId>
             <version>4.4.1</version>
         </dependency>
+        <dependency>
+            <groupId>org.springframework.data</groupId>
+            <artifactId>spring-data-mongodb</artifactId>
+            <version>1.9.2.RELEASE</version>
+        </dependency>
     </dependencies>
+
+    <build>
+        <filters>
+            <filter>src/main/filters/${env}/baidu-post-mongodb.properties</filter>
+        </filters>
+        <resources>
+            <resource>
+                <directory>src/main/resources</directory>
+                <includes>
+                    <include>**/*.properties</include>
+                </includes>
+                <filtering>true</filtering>
+            </resource>
+            <resource>
+                <directory>src/main/resources</directory>
+                <includes>
+                    <include>**/*.xml</include>
+                </includes>
+                <filtering>false</filtering>
+            </resource>
+        </resources>
+    </build>
+
+
+    <profiles>
+        <profile>
+            <id>dev</id>
+            <activation>
+                <activeByDefault>true</activeByDefault>
+            </activation>
+            <properties>
+                <env>dev</env>
+                <octopus.app.jvm>-server -Xmx512m -Xms512m -verbose:gc -Xloggc:./gc.log
+                    -XX:ErrorFile=./hs_err_pid_att.log -XX:HeapDumpPath=./java_pid_att.hprof
+                    -XX:+HeapDumpOnOutOfMemoryError -XX:+PerfDataSaveToFile -XX:+PrintGC -XX:+PrintGCDetails
+                    -XX:+PrintGCTimeStamps
+                </octopus.app.jvm>
+            </properties>
+        </profile>
+        <profile>
+            <id>qa</id>
+            <properties>
+                <env>qa</env>
+                <octopus.app.jvm>-server -Xmx1024m -Xms1024m -verbose:gc -Xloggc:./gc.log
+                    -XX:ErrorFile=./hs_err_pid_att.log -XX:HeapDumpPath=./java_pid_att.hprof
+                    -XX:+HeapDumpOnOutOfMemoryError -XX:+PerfDataSaveToFile -XX:+PrintGC -XX:+PrintGCDetails
+                    -XX:+PrintGCTimeStamps
+                </octopus.app.jvm>
+            </properties>
+        </profile>
+        <profile>
+            <id>online</id>
+            <properties>
+                <env>online</env>
+                <octopus.app.jvm>-server -Xmx1024m -Xms1024m -verbose:gc -Xloggc:./gc.log
+                    -XX:ErrorFile=./hs_err_pid_att.log -XX:HeapDumpPath=./java_pid_att.hprof
+                    -XX:+HeapDumpOnOutOfMemoryError -XX:+PerfDataSaveToFile -XX:+PrintGC -XX:+PrintGCDetails
+                    -XX:+PrintGCTimeStamps
+                </octopus.app.jvm>
+            </properties>
+        </profile>
+    </profiles>
 </project>

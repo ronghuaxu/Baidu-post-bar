@@ -33,8 +33,26 @@ public class ParseHtmlOutTest {
 
     @Test
     public void getInfoFromResult() throws ErrorkeywordException, ParserConfigurationException, XPatherException, SAXException, XPathExpressionException, IOException {
-        datainputmachine.getData(urlLoader.GetTowards("java"));
-        System.out.println(JsonUtil.toJson(parseHtmlOut.getInfoFromResult(datainputmachine.getContent())));
+        String keyword = "linux";
+
+        datainputmachine.getData(urlLoader.GetTowards(keyword, 0));
+        //获取第一页的json数据
+        System.out.println("=========================1页=========================");
+        parseHtmlOut.getInfoFromResult(datainputmachine.getContent(), keyword);
+        int number;
+        //判断是否存在多页
+        if (parseHtmlOut.getfinalurl(datainputmachine.getContent()) != null) {
+            number = PageCount.out(parseHtmlOut.getfinalurl(datainputmachine.getContent()));
+        } else {
+            return;
+        }
+
+        for (int i = 1; i <= number; i++) {
+            datainputmachine.getData(urlLoader.GetTowards(keyword, i));
+            System.out.println("=========================" + (i + 1) + "页=========================");
+            parseHtmlOut.getInfoFromResult(datainputmachine.getContent(), keyword);
+        }
+
     }
 
 

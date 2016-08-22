@@ -12,7 +12,7 @@ public class UrlLoaderTest {
 
     @Test
     public void getTowards() throws Exception {
-        System.out.println(urlLoader.GetTowards("java"));
+        System.out.println(urlLoader.GetTowards("java", 0));
 
     }
 

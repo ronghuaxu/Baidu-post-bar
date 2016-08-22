@@ -1,9 +1,11 @@
 package com.hdu.edu.parse;
 
-import com.hdu.edu.model.PageLIstInfo;
+import com.hdu.edu.model.PageListInfo;
+import com.hdu.edu.mongodb.impl.PageListInfoDaoImpl;
 import org.htmlcleaner.HtmlCleaner;
 import org.htmlcleaner.TagNode;
 import org.htmlcleaner.XPatherException;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.xml.sax.SAXException;
 
@@ -19,13 +21,19 @@ import java.util.List;
 @Service
 public class ParseHtmlOut {
 
-    public List<PageLIstInfo> getInfoFromResult(String content) throws ParserConfigurationException, IOException, SAXException, XPathExpressionException, XPatherException {
+    @Autowired
+    private PageListInfoDaoImpl pageListInfoDaoImpl;
 
-        HtmlCleaner hc = new HtmlCleaner();
+    public static final int NUMBER_PN = 50;
+    HtmlCleaner hc = new HtmlCleaner();
+
+    public void getInfoFromResult(String content, String keyword) throws ParserConfigurationException, IOException, SAXException, XPathExpressionException, XPatherException {
+
         TagNode tn = hc.clean(content);
-        List<PageLIstInfo> InfoList = new ArrayList<>();
+//        List<PageListInfo> InfoList = new ArrayList<>();
 
-        for (int i = 1; i < 2; i++) {
+
+        for (int i = 1; i <= NUMBER_PN; i++) {
 
             String countXpath = "//*[@id=\"thread_list\"]/li[" + i + "]/div/div[1]/span";
 
@@ -34,9 +42,10 @@ public class ParseHtmlOut {
             String dateXpath = "//*[@id=\"thread_list\"]/li[" + i + "]/div/div[2]/div[2]/div[2]/span[2]";
 
             Object[] titleobjarr = null;
+
             titleobjarr = tn.evaluateXPath(titleXpath);
 
-            PageLIstInfo pageLIstInfo = new PageLIstInfo();
+            PageListInfo pageLIstInfo = new PageListInfo();
             if (titleobjarr != null && titleobjarr.length > 0) {
 
                 for (Object obja : titleobjarr) {
@@ -80,14 +89,32 @@ public class ParseHtmlOut {
                     }
                 }
             }
+            //精华帖子没有达到50的分页数量
+            if (pageLIstInfo.getUrl() == null) {
+                break;
+            }
+            pageLIstInfo.setKeyword(keyword);
+            System.out.println(pageListInfoDaoImpl.savePageListInfo(pageLIstInfo));
 
-            InfoList.add(pageLIstInfo);
+//            InfoList.add(pageLIstInfo);
 
         }
 
 
-        return InfoList;
+//        return InfoList;
     }
 
+    public String getfinalurl(String content) throws XPatherException {
+
+        TagNode tn = hc.clean(content);
+        Object[] pageNumber = null;
+        pageNumber = tn.evaluateXPath(PageCount.PAGENUMBER);
+        String FinalUrl = null;
+        for (Object obj : pageNumber) {
+            TagNode tna = (TagNode) obj;
+            FinalUrl = tna.getAttributeByName("href");
+        }
+        return FinalUrl;
+    }
 
 }
